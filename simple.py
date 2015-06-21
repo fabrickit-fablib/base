@@ -12,28 +12,48 @@ class SimpleBase():
         self.packages = {}
 
     def get_init_data(self):
+        self.is_package = False
+        self.is_conf = False
+        self.is_data = False
+        if len(env.args) == 0:
+            self.is_package = True
+            self.is_conf = True
+            self.is_data = True
+        if 'package' in env.args:
+            self.is_package = True
+        if 'conf' in env.args:
+            self.is_conf = True
+        if 'data' in env.args:
+            self.is_data = True
+
         if not hasattr(self, 'is_init') or self.is_init is not True:
             if self.data_key in env.cluster:
                 self.data.update(env.cluster[self.data_key])
-              
+
             node_os = env.node['os']
             if hasattr(self, 'services'):
-                services = []
-                for os_pattern, service_names in self.services.items():
-                    if re.match(os_pattern, node_os):
-                        for service_name in service_names:
-                            services.append(Service(service_name))
-                        break
-                self.services = services
+                if isinstance(self.services, list):
+                    self.services = [Service(service) for service in self.services]
+                elif isinstance(self.services, dict):
+                    services = []
+                    for os_pattern, service_names in self.services.items():
+                        if re.match(os_pattern, node_os):
+                            for service_name in service_names:
+                                services.append(Service(service_name))
+                            break
+                    self.services = services
 
             if hasattr(self, 'packages'):
-                packages = []
-                for os_pattern, package_names in self.packages.items():
-                    if re.match(os_pattern, node_os):
-                        for package_name in package_names:
-                            packages.append(Package(package_name))
-                        break
-                self.packages = packages
+                if isinstance(self.packages, list):
+                    self.packages = [Package(package) for package in self.packages]
+                if isinstance(self.packages, dict):
+                    packages = []
+                    for os_pattern, package_names in self.packages.items():
+                        if re.match(os_pattern, node_os):
+                            for package_name in package_names:
+                                packages.append(Package(package_name))
+                            break
+                    self.packages = packages
 
             self.init_data()
             self.is_init = True
