@@ -6,12 +6,12 @@ from fabkit import env, Service, Package
 
 class SimpleBase():
     def __init__(self):
-        self.key = 'base'
+        self.data_key = None
         self.data = {}
         self.services = []
         self.packages = {}
 
-    def get_init_data(self):
+    def init(self):
         self.is_package = False
         self.is_conf = False
         self.is_data = False
@@ -27,7 +27,9 @@ class SimpleBase():
             self.is_data = True
 
         if not hasattr(self, 'is_init') or self.is_init is not True:
-            if self.data_key in env.cluster:
+            if not hasattr(self, 'data'):
+                self.data = {}
+            if hasattr(self, 'data_key') and self.data_key in env.cluster:
                 self.data.update(env.cluster[self.data_key])
 
             node_os = env.node['os']
@@ -51,7 +53,13 @@ class SimpleBase():
                     for os_pattern, package_names in self.packages.items():
                         if re.match(os_pattern, node_os):
                             for package_name in package_names:
-                                packages.append(Package(package_name))
+                                if isinstance(package_name, str):
+                                    packages.append(Package(package_name))
+                                if isinstance(package_name, dict):
+                                    packages.append(Package(
+                                        package_name['name'],
+                                        path=package_name['path']
+                                    ))
                             break
                     self.packages = packages
 
