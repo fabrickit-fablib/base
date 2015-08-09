@@ -72,46 +72,55 @@ class SimpleBase():
         self.data.update({})
 
     def install_packages(self):
+        self.init()
         for package in self.packages:
             package.install()
         return self
 
     def upgrade_packages(self):
+        self.init()
         for package in self.packages:
             package.upgrade()
         return self
 
     def uninstall_packages(self):
+        self.init()
         for package in self.packages:
             package.uninstall()
         return self
 
     def start_services(self, **kwargs):
+        self.init()
         for service in self.services:
             service.start(**kwargs)
         return self
 
     def stop_services(self, **kwargs):
+        self.init()
         for service in self.services:
             service.start(**kwargs)
         return self
 
     def restart_services(self, **kwargs):
+        self.init()
         for service in self.services:
             service.restart(**kwargs)
         return self
 
     def reload_services(self, **kwargs):
+        self.init()
         for service in self.services:
             service.reload(**kwargs)
         return self
 
     def status_services(self, **kwargs):
+        self.init()
         for service in self.services:
             service.reload(**kwargs)
         return self
 
     def enable_services(self, **kwargs):
+        self.init()
         for service in self.services:
             service.enable(**kwargs)
         return self
