@@ -11,22 +11,23 @@ class SimpleBase():
         self.services = []
         self.packages = {}
 
-    def init(self):
-        self.is_package = False
-        self.is_conf = False
-        self.is_data = False
-        if len(env.args) == 0:
-            self.is_package = True
-            self.is_conf = True
-            self.is_data = True
-        if 'package' in env.args:
-            self.is_package = True
-        if 'conf' in env.args:
-            self.is_conf = True
-        if 'data' in env.args:
-            self.is_data = True
+    def is_tag(self, *tags):
+        exec_tags = env.kwargs.get('t')
+        if not exec_tags:
+            return True
 
+        exec_tags = exec_tags.split('+')
+
+        for t in tags:
+            if t in exec_tags:
+                return True
+
+        return False
+
+    def init(self):
         if not hasattr(self, 'is_init') or self.is_init is not True:
+            self.init_before()
+
             if not hasattr(self, 'data'):
                 self.data = {}
             if hasattr(self, 'data_key') and self.data_key in env.cluster:
@@ -63,13 +64,16 @@ class SimpleBase():
                             break
                     self.packages = packages
 
-            self.init_data()
             self.is_init = True
 
+        self.init_after()
         return self.data
 
-    def init_data(self):
-        self.data.update({})
+    def init_before(self):
+        pass
+
+    def init_after(self):
+        pass
 
     def install_packages(self):
         self.init()
