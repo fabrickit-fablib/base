@@ -103,10 +103,10 @@ class SimpleBase():
     def init_after(self):
         pass
 
-    def install_packages(self):
+    def install_packages(self, option=''):
         self.init()
         for package in self.node_packages:
-            package.install()
+            package.install(option)
         return self
 
     def upgrade_packages(self):
