@@ -3,7 +3,7 @@
 from simple import SimpleBase
 
 
-class Test(SimpleBase):
+class TestSimpleBase(SimpleBase):
     def __init__(self):
         self.data_key = 'mysql'
         self.services = {

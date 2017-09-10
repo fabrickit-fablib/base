@@ -1,0 +1,7 @@
+node_map:
+  base:
+    hosts:
+      - base-centos7-1.example.com
+      - base-ubuntu16-1.example.com
+    fabruns:
+      - base/test_simplebase
