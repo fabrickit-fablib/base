@@ -1,7 +1,7 @@
 # coding: utf-8
 
 import re
-from fabkit import env, Service, Package
+from fabkit import env, sudo, Service, Package
 
 
 class SimpleBase():
@@ -102,6 +102,12 @@ class SimpleBase():
 
     def init_after(self):
         pass
+
+    def init_package_manager(self):
+        if env.node['package_manager'] == 'apt':
+            sudo('apt update')
+        elif env.node['package_manager'] == 'yum':
+            sudo('yum clean all')
 
     def install_packages(self, option=''):
         self.init()
